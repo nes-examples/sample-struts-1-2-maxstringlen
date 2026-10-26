@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+  <form-beans>
+    <form-bean name="editForm" type="example.EditForm"/>
+  </form-beans>
+
+  <action-mappings>
+    <action path="/form" forward="demo.form"/>
+    <action path="/saveValidated" type="example.EditAction" name="editForm" scope="request"
+            parameter="method" validate="true" input="demo.form">
+      <forward name="success" path="demo.saved"/>
+    </action>
+    <action path="/saveUnvalidated" type="example.EditAction" name="editForm" scope="request"
+            parameter="method" validate="false" input="demo.form">
+      <forward name="success" path="demo.saved"/>
+    </action>
+  </action-mappings>
+
+  <!-- Recommended with Tiles: must extend TilesRequestProcessor, or the Tiles plug-in stops Struts from starting -->
+  <controller processorClass="example.TilesLimitAwareRequestProcessor" maxStringLen="32K"/>
+
+  <message-resources parameter="example.ApplicationResources"/>
+
+  <plug-in className="org.apache.struts.tiles.TilesPlugin">
+    <set-property property="definitions-config" value="/WEB-INF/demo/tiles-defs.xml"/>
+    <set-property property="moduleAware" value="true"/>
+  </plug-in>
+  <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <set-property property="pathnames" value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+  </plug-in>
+</struts-config>

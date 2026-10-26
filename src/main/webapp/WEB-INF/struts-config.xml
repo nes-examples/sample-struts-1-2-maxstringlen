@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+  <form-beans>
+    <form-bean name="editForm" type="example.EditForm"/>
+    <form-bean name="checkedEditForm" type="example.CheckedEditForm"/>
+  </form-beans>
+
+  <action-mappings>
+    <!-- A: validate="true" with a required title (ValidatorForm) -->
+    <action path="/saveValidated" type="example.EditAction" name="editForm" scope="request"
+            parameter="method" validate="true" input="/edit.jsp">
+      <forward name="success" path="/result.jsp"/>
+    </action>
+    <!-- B: validate="false"; the action runs on whatever the form holds -->
+    <action path="/saveUnvalidated" type="example.EditAction" name="editForm" scope="request"
+            parameter="method" validate="false" input="/edit.jsp">
+      <forward name="success" path="/result.jsp"/>
+    </action>
+    <!-- C: recommended fix; the form checks the limit attribute in validate() -->
+    <action path="/saveChecked" type="example.EditAction" name="checkedEditForm" scope="request"
+            parameter="method" validate="true" input="/edit.jsp">
+      <forward name="success" path="/result.jsp"/>
+    </action>
+  </action-mappings>
+
+  <!-- The default processor and the default maxStringLen (4K) -->
+  <controller processorClass="org.apache.struts.action.RequestProcessor"/>
+
+  <message-resources parameter="example.ApplicationResources"/>
+
+  <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <set-property property="pathnames" value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+  </plug-in>
+</struts-config>

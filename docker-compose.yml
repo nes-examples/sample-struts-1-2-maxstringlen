@@ -1,0 +1,12 @@
+# Runs the example in Apache Tomcat 9 on JDK 8.
+#
+#   NES_TOKEN=<your token> ./mvnw -s settings.xml clean package
+#   docker compose up --build -d     then open http://localhost:8080/
+#   docker compose down
+#
+# Override the port with PORT=9090.
+services:
+  tomcat:
+    build: .
+    ports:
+      - "${PORT:-8080}:8080"

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+          "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+<struts-config>
+  <form-beans>
+    <form-bean name="editForm" type="example.EditForm"/>
+  </form-beans>
+
+  <action-mappings>
+    <action path="/form" forward="/demo/plain-form.jsp"/>
+    <action path="/saveValidated" type="example.EditAction" name="editForm" scope="request"
+            parameter="method" validate="true" input="/demo/plain-form.jsp">
+      <forward name="success" path="/demo/plain-saved.jsp"/>
+    </action>
+    <action path="/saveUnvalidated" type="example.EditAction" name="editForm" scope="request"
+            parameter="method" validate="false" input="/demo/plain-form.jsp">
+      <forward name="success" path="/demo/plain-saved.jsp"/>
+    </action>
+  </action-mappings>
+
+  <!-- Recommended without Tiles: a RequestProcessor subclass -->
+  <controller processorClass="example.LimitAwareRequestProcessor" maxStringLen="32K"/>
+
+  <message-resources parameter="example.ApplicationResources"/>
+
+  <plug-in className="org.apache.struts.validator.ValidatorPlugIn">
+    <set-property property="pathnames" value="/WEB-INF/validator-rules.xml,/WEB-INF/validation.xml"/>
+  </plug-in>
+</struts-config>

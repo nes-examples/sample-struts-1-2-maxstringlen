@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
+       "http://struts.apache.org/dtds/tiles-config_1_1.dtd">
+<tiles-definitions>
+  <definition name="demo.layout" path="/demo/layout.jsp">
+    <put name="body" value=""/>
+  </definition>
+  <definition name="demo.form" extends="demo.layout">
+    <put name="body" value="/demo/form.jsp"/>
+  </definition>
+  <definition name="demo.saved" extends="demo.layout">
+    <put name="body" value="/demo/saved.jsp"/>
+  </definition>
+</tiles-definitions>

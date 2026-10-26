@@ -1,0 +1,80 @@
+<% DemoInfo info = new DemoInfo(request, application); %>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title><%= info.usesTiles() ? "With Tiles" : "Without Tiles" %>, <%= info.isAfter() ? "after" : "before" %>: Struts maxStringLen example</title>
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --ink:#1d2330; --muted:#5b6475; --line:#d9dde4;
+          --before:#b4441f; --after:#1f7a4a; --warn-bg:#fff4e5; --warn-line:#e8a33d;
+          --err-bg:#fdecec; --err-line:#d64545; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 16px; }
+  nav { display:grid; grid-template-columns: auto 1fr 1fr; gap:6px 8px; align-items:center; margin-bottom:12px; font-size:14px; }
+  nav .grp { color:var(--muted); font-weight:600; padding-right:4px; }
+  nav a { padding:6px 10px; border:1px solid var(--line); border-radius:6px; text-decoration:none; color:var(--muted); background:var(--card); text-align:center; }
+  nav a.on { color:#fff; border-color:transparent; }
+  nav a.on.before { background:var(--before); } nav a.on.after { background:var(--after); }
+  header { background:var(--card); border:1px solid var(--line); border-top:5px solid <%= info.isAfter() ? "var(--after)" : "var(--before)" %>; border-radius:8px; padding:16px; }
+  .tag { display:inline-block; font-size:12px; font-weight:600; letter-spacing:.02em; padding:2px 8px; border-radius:999px; background:#eef0f4; color:var(--muted); margin-bottom:6px; }
+  h1 { margin:0 0 4px; font-size:22px; }
+  header p { margin:4px 0 12px; color:var(--muted); }
+  table.running { border-collapse:collapse; width:100%; font-size:14px; }
+  table.running th { text-align:left; font-weight:600; width:190px; padding:4px 8px 4px 0; vertical-align:top; }
+  table.running td { padding:4px 0; overflow-wrap:anywhere; }
+  code { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 13px; background:#eef0f4; padding:1px 4px; border-radius:4px; }
+  main { margin-top:16px; background:var(--card); border:1px solid var(--line); border-radius:8px; padding:16px; }
+  label { display:block; font-weight:600; margin:12px 0 4px; }
+  input[type=text], textarea { width:100%; font:inherit; padding:8px; border:1px solid var(--line); border-radius:6px; }
+  textarea { min-height: 140px; }
+  button { font:inherit; padding:6px 12px; border-radius:6px; border:1px solid var(--line); background:#fff; cursor:pointer; }
+  button.primary { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .row { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px; }
+  .counter { color:var(--muted); font-size:14px; margin-top:4px; }
+  .counter.over { color:var(--err-line); font-weight:600; }
+  ul.errors { background:var(--err-bg); border:1px solid var(--err-line); border-radius:6px; padding:10px 10px 10px 30px; margin:0 0 12px; }
+  .note { background:var(--warn-bg); border:1px solid var(--warn-line); border-radius:6px; padding:10px; margin:0 0 12px; }
+  .ok { background:#e9f6ef; border:1px solid var(--after); border-radius:6px; padding:10px; margin:0 0 12px; }
+  ol { padding-left: 20px; } li { margin: 2px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav>
+    <span class="grp">With Tiles</span>
+    <a href="/tiles/before/" class="before <%= info.isCurrent("/tiles/before") ? "on" : "" %>">Before: current settings</a>
+    <a href="/tiles/after/" class="after <%= info.isCurrent("/tiles/after") ? "on" : "" %>">After: recommended settings</a>
+    <span class="grp">Without Tiles</span>
+    <a href="/plain/before/" class="before <%= info.isCurrent("/plain/before") ? "on" : "" %>">Before: current settings</a>
+    <a href="/plain/after/" class="after <%= info.isCurrent("/plain/after") ? "on" : "" %>">After: recommended settings</a>
+  </nav>
+  <header>
+    <span class="tag"><%= info.usesTiles() ? "WITH TILES" : "WITHOUT TILES" %></span>
+    <h1><%= info.isAfter() ? "After: recommended settings" : "Before: current settings" %></h1>
+    <% if (info.isAfter() && info.usesTiles()) { %>
+      <p>A <code>TilesRequestProcessor</code> subclass catches an over-limit text field before validation and the save,
+      and <code>maxStringLen</code> is raised to 32K. It has to extend <code>TilesRequestProcessor</code>: with the
+      Tiles plug-in, a plain <code>RequestProcessor</code> subclass stops Struts from starting.</p>
+    <% } else if (info.isAfter()) { %>
+      <p>A <code>RequestProcessor</code> subclass catches an over-limit text field before validation and the save,
+      and <code>maxStringLen</code> is raised to 32K.</p>
+    <% } else if (info.usesTiles()) { %>
+      <p><code>processorClass="org.apache.struts.action.RequestProcessor"</code> and the default <code>maxStringLen</code>
+      of 4K. The Tiles plug-in swaps that processor for <code>TilesRequestProcessor</code>.
+      A text field over the limit empties the whole form.</p>
+    <% } else { %>
+      <p>The default <code>RequestProcessor</code> and the default <code>maxStringLen</code> of 4K, without Tiles.
+      A text field over the limit empties the whole form.</p>
+    <% } %>
+    <table class="running">
+      <tr><th>Struts</th><td><code><%= DemoInfo.jarOf(org.apache.struts.action.ActionServlet.class) %></code></td></tr>
+      <tr><th>Commons FileUpload</th><td><code><%= DemoInfo.jarOf(org.apache.commons.fileupload.FileUpload.class) %></code></td></tr>
+      <tr><th>Request processor</th><td><code><%= info.processorClass() %></code></td></tr>
+      <tr><th><code>maxStringLen</code></th><td><code><%= info.maxStringLen() %></code> (<%= String.format("%,d", info.maxStringLenBytes()) %> bytes per text field)</td></tr>
+      <tr><th>Plug-ins</th><td><%= info.plugIns() %> (the title is a required field)</td></tr>
+      <tr><th>Server</th><td><%= info.server() %></td></tr>
+    </table>
+  </header>
+  <main>
